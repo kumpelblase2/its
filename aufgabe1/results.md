@@ -5,6 +5,19 @@ $ http --headers apache.org | grep Server
 CVEs:
 https://httpd.apache.org/security/vulnerabilities_24.html
 
+Tools: Wireshark
+
+Header-Daten:
+HTTP/1.1 302 Found
+Date: Mon, 05 Oct 2015 20:14:39 GMT
+Server: Apache/2.4.10 (Linux/SUSE)
+Location: https://www.uni-hamburg.de/
+Content-Length: 299
+Content-Type: text/html; charset=iso-8859-1
+
+Schwachstellen:
+http://httpd.apache.org/security/vulnerabilities_24.html
+
 ## John the ripper
 ### Time
 
