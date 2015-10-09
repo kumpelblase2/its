@@ -34,3 +34,14 @@ http://httpd.apache.org/security/vulnerabilities_24.html
 #### Wordlist
 
 f9$äA43f - Time 0Seconds
+
+## Phishing
+Website: Postbank Online-Banking
+
+id3_hf_0=
+jsDisabled=false
+nutzername=32573465
+kennwort=tet123
+loginButton=Anmelden
+
+Notiz: Der Link für das "Action" in der PBCopy.html Datei wurde durch "login.php" ersetzt, um die Daten zu erhalten. In dem Projekt wurden die .css Files und Bilder nicht hinzugefügt. 
