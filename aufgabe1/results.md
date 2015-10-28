@@ -44,4 +44,26 @@ nutzername=32573465
 kennwort=tet123
 loginButton=Anmelden
 
-Notiz: Der Link für das "Action" in der PBCopy.html Datei wurde durch "login.php" ersetzt, um die Daten zu erhalten. In dem Projekt wurden die .css Files und Bilder nicht hinzugefügt. 
+Notiz: Der Link für das "Action" in der PBCopy.html Datei wurde durch "login.php" ersetzt, um die Daten zu erhalten. In dem Projekt wurden die .css Files und Bilder nicht hinzugefügt.
+
+
+## Buffer Overflow
+
+```
+$ ./bufferoverflow "DDDDDDDDDDDDDDDD    "
+
+DDDDDDDDDDDDDDDD    %
+```
+
+```
+$ ./bufferoverflow DDDDDDDDDDDDDDDDDDDDDDDDD
+DDDDDDDDD
+DDDDDDDDDDDDDDDDDDDDDDDDD%
+```
+
+```
+$ ./bufferoverflow DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+[1]    19154 segmentation fault (core dumped)  ./bufferoverflow DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+
+```
