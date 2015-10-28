@@ -28,11 +28,11 @@ http://httpd.apache.org/security/vulnerabilities_24.html
 - 5 Characters (ilu32): 1min 8seconds
 
 #### Incemental
-
+`$ john --incremental=digits`
 58493057 - Time 8seconds
 
 #### Wordlist
-
+`$ john --wordlist=wordlist.lst`
 f9$äA43f - Time 0Seconds
 
 ## Phishing
