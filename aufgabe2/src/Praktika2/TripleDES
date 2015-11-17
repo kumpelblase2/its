@@ -22,27 +22,17 @@ public class TripleDES {
 		InputStream stream = new FileInputStream(this.inputFile);
 		OutputStream output = new FileOutputStream(outputFile);
 		DESKey desKey = readKeys();
-		byte[] buffer = new byte[24];
-		byte[] ivBuffer = new byte[8];
+		byte[] buffer = new byte[8];
 		byte[] encryptBuffer = new byte[8];
 		DES des1 = new DES(desKey.keys[0]);
 		DES des2 = new DES(desKey.keys[1]);
 		DES des3 = new DES(desKey.keys[2]);
-		des1.encrypt(desKey.iv, 0, ivBuffer, 0);
-
+		tripleEncrypt(des1, des2, des3, desKey.iv, encryptBuffer);
 		while (stream.read(buffer) > 0) {
 			for (int i = 0; i < 8; i++) {
-				buffer[i] = (byte) (buffer[i] ^ (ivBuffer[i]));
+				buffer[i] = (byte) (buffer[i] ^ (encryptBuffer[i]));
 			}
-			des2.decrypt(buffer, 8, encryptBuffer, 0);
-			for (int i = 8; i < 16; i++) {
-				buffer[i] = (byte) (buffer[i] ^ (encryptBuffer[i - 8]));
-			}
-			des3.encrypt(buffer, 16, encryptBuffer, 0);
-			for (int i = 16; i < 24; i++) {
-				buffer[i] = (byte) (buffer[i] ^ (encryptBuffer[i - 16]));
-			}
-
+			tripleEncrypt(des1, des2, des3, buffer, encryptBuffer);
 			output.write(buffer);
 		}
 		stream.close();
@@ -54,32 +44,30 @@ public class TripleDES {
 		InputStream stream = new FileInputStream(this.inputFile);
 		OutputStream output = new FileOutputStream(outputFile);
 		DESKey desKey = readKeys();
-		byte[] buffer = new byte[24];
-		byte[] ivBuffer = new byte[8];
+		byte[] buffer = new byte[8];
 		byte[] encryptBuffer = new byte[8];
-		byte[] decryptBuffer = new byte[24];
+		byte[] decryptBuffer = new byte[8];
 		DES des1 = new DES(desKey.keys[0]);
 		DES des2 = new DES(desKey.keys[1]);
 		DES des3 = new DES(desKey.keys[2]);
-		des1.encrypt(desKey.iv, 0, ivBuffer, 0);
 
+		tripleEncrypt(des1, des2, des3, desKey.iv, encryptBuffer);
 		while (stream.read(buffer) > 0) {
 			for (int i = 0; i < 8; i++) {
-				decryptBuffer[i] = (byte) (buffer[i] ^ (ivBuffer[i]));
+				decryptBuffer[i] = (byte) (buffer[i] ^ (encryptBuffer[i]));
 			}
-			des2.decrypt(buffer, 8, encryptBuffer, 0);
-			for (int i = 8; i < 16; i++) {
-				decryptBuffer[i] = (byte) (buffer[i] ^ (encryptBuffer[i - 8]));
-			}
-			des3.encrypt(buffer, 16, encryptBuffer, 0);
-			for (int i = 16; i < 24; i++) {
-				decryptBuffer[i] = (byte) (buffer[i] ^ (encryptBuffer[i - 16]));
-			}
-
+			tripleEncrypt(des1, des2, des3, buffer, encryptBuffer);
 			output.write(decryptBuffer);
 		}
 		stream.close();
 		output.close();
+	}
+
+	private void tripleEncrypt(DES des1, DES des2, DES des3, byte[] input,
+			byte[] output) {
+		des1.encrypt(input, 0, output, 0);
+		des2.decrypt(output, 0, output, 0);
+		des3.encrypt(output, 0, output, 0);
 	}
 
 	private DESKey readKeys() throws IOException {
@@ -96,18 +84,18 @@ public class TripleDES {
 
 		return desKey;
 	}
-	
-	public static void main(String[] args) throws IOException{
-        String action = args[3];
-        File input = new File(args[0]);
-        File inputKey = new File(args[1]);
-        File output = new File(args[2]);
-        TripleDES  tripleDes = new TripleDES(input, output, inputKey);
-        
-        if(action.equals("encrypt")){
-        	tripleDes.encrypt();
-        } else if(action.equals("decrypt")){
-        	tripleDes.decrypt();
-        }
+
+	public static void main(String[] args) throws IOException {
+		String action = args[3];
+		File input = new File(args[0]);
+		File inputKey = new File(args[1]);
+		File output = new File(args[2]);
+		TripleDES tripleDes = new TripleDES(input, output, inputKey);
+
+		if (action.equals("encrypt")) {
+			tripleDes.encrypt();
+		} else if (action.equals("decrypt")) {
+			tripleDes.decrypt();
+		}
 	}
 }
