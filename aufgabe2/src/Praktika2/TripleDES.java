@@ -28,7 +28,12 @@ public class TripleDES {
 		DES des2 = new DES(desKey.keys[1]);
 		DES des3 = new DES(desKey.keys[2]);
 		tripleEncrypt(des1, des2, des3, desKey.iv, encryptBuffer);
-		while (stream.read(buffer) > 0) {
+		int read;
+		while ((read = stream.read(buffer)) > 0) {
+			for(int i = read; i < 8; i++) {
+				buffer[i] = 0;
+			}
+
 			for (int i = 0; i < 8; i++) {
 				buffer[i] = (byte) (buffer[i] ^ (encryptBuffer[i]));
 			}
@@ -52,7 +57,12 @@ public class TripleDES {
 		DES des3 = new DES(desKey.keys[2]);
 
 		tripleEncrypt(des1, des2, des3, desKey.iv, encryptBuffer);
-		while (stream.read(buffer) > 0) {
+		int read;
+		while ((read = stream.read(buffer)) > 0) {
+			for(int i = read; i < 8; i++){
+				buffer[i] = 0;
+			}
+
 			for (int i = 0; i < 8; i++) {
 				decryptBuffer[i] = (byte) (buffer[i] ^ (encryptBuffer[i]));
 			}
