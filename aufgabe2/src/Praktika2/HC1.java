@@ -11,6 +11,7 @@ public class HC1 {
     private final File cryptFile;
 
     public HC1(long key, File cryptFile) {
+        //Init LCG with specific key to ensure same random numbers get generated for same key.
         this.key = new LCG(key);
         this.cryptFile = cryptFile;
     }
@@ -21,12 +22,15 @@ public class HC1 {
         byte[] buffer = new byte[8];
         int read = 0;
         while((read = stream.read(buffer)) > 0) {
+            //Add padding if read less than 8 bytes.
             for(int i = read; i < 8; i++) {
                 buffer[i] = 0;
             }
 
+            // Generate next key for current bytes.
             long keyVal = this.key.nextValue();
             for(int i = 0; i < read; i++) {
+                // Shift key to have one byte available for each byte that needs to be encrypted
                 buffer[i] = (byte) (buffer[i] ^ (byte)(keyVal >> 8 * i));
             }
             output.write(buffer, 0, read);
