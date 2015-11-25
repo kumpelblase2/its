@@ -21,6 +21,10 @@ public class HC1 {
         byte[] buffer = new byte[8];
         int read = 0;
         while((read = stream.read(buffer)) > 0) {
+            for(int i = read; i < 8; i++) {
+                buffer[i] = 0;
+            }
+
             long keyVal = this.key.nextValue();
             for(int i = 0; i < read; i++) {
                 buffer[i] = (byte) (buffer[i] ^ (byte)(keyVal >> 8 * i));
