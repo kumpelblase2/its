@@ -1,0 +1,52 @@
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+
+/**
+ * 
+ * @author Vu-Nguyen Bui & Tim Hagemann <br>
+ *         IT-Sicherheit Praktikum 3 - JAVA Kryptographie API <br>
+ *         Aufgabe 2
+ */
+public class SSF {
+	private static PrivateKey prvKey;
+	private static PublicKey pubKey;
+
+	public static void main(String[] args) throws Exception {
+		getPrivateKey("KMueller.prv");
+		getPublicKey("KMueller.pub");
+
+		System.out.println(pubKey.getEncoded());
+
+		System.out.println(prvKey.getEncoded());
+	}
+
+	public static void getPrivateKey(String fileName) throws Exception {
+		DataInputStream is = new DataInputStream(new FileInputStream(fileName));
+
+		byte[] prvKeyBytes = new byte[is.readInt()];
+		is.readFully(prvKeyBytes);
+		is.close();
+
+		PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(prvKeyBytes);
+		KeyFactory keyFac = KeyFactory.getInstance("RSA");
+		prvKey = keyFac.generatePrivate(pkcs8KeySpec);
+	}
+
+	public static void getPublicKey(String fileName) throws Exception {
+		DataInputStream is = new DataInputStream(new FileInputStream(fileName));
+
+		byte[] pubKeyBytes = new byte[is.readInt()];
+		is.readFully(pubKeyBytes);
+		is.close();
+
+		X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(pubKeyBytes);
+		KeyFactory kf = KeyFactory.getInstance("RSA");
+		pubKey = kf.generatePublic(x509KeySpec);
+	}
+
+}
