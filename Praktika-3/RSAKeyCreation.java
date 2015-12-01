@@ -14,22 +14,26 @@ import java.security.PublicKey;
  *         Aufgabe 1
  */
 public class RSAKeyCreation {
-	private static String ownerName;
+	private String ownerName;
 	private static KeyPair keyPair = null;
 	private static PrivateKey privateKey;
 	private static PublicKey publicKey;
 	private static byte[] publicKeyBytes;
 	private static byte[] privateKeyBytes;
 
+	public RSAKeyCreation(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
-		ownerName = "KMueller";
+		RSAKeyCreation rsaKC = new RSAKeyCreation(args[0]);
 
-		generateKeyPair();
+		rsaKC.generateKeyPair();
 
-		writePubAndPrvFiles(ownerName);
+		rsaKC.writePubAndPrvFiles(rsaKC.ownerName);
 
-		System.out.println(ownerName.length());
-		System.out.println(ownerName.getBytes());
+		System.out.println(rsaKC.ownerName.length());
+		System.out.println(rsaKC.ownerName.getBytes());
 
 		System.out.println(publicKeyBytes.length);
 		System.out.println(publicKey.getEncoded());
@@ -39,7 +43,7 @@ public class RSAKeyCreation {
 
 	}
 
-	public static void generateKeyPair() throws NoSuchAlgorithmException {
+	public void generateKeyPair() throws NoSuchAlgorithmException {
 		// Generate public/private key pair
 		KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
 		gen.initialize(2048);
@@ -54,7 +58,7 @@ public class RSAKeyCreation {
 		publicKeyBytes = publicKey.getEncoded();
 	}
 
-	private static void writePubAndPrvFiles(String ownerName) throws IOException {
+	private void writePubAndPrvFiles(String ownerName) throws IOException {
 		// Create public and private file
 		DataOutputStream pubFile = new DataOutputStream(new FileOutputStream(ownerName + ".pub"));
 		DataOutputStream prvFile = new DataOutputStream(new FileOutputStream(ownerName + ".prv"));
