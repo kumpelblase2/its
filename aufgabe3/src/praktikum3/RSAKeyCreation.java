@@ -1,3 +1,5 @@
+package praktikum3;
+
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,7 +32,7 @@ public class RSAKeyCreation {
 
 		rsaKC.generateKeyPair();
 
-		rsaKC.writePubAndPrvFiles(rsaKC.ownerName);
+		rsaKC.writePubAndPrvFiles();
 
 		System.out.println(rsaKC.ownerName.length());
 		System.out.println(rsaKC.ownerName.getBytes());
@@ -58,19 +60,19 @@ public class RSAKeyCreation {
 		publicKeyBytes = publicKey.getEncoded();
 	}
 
-	private void writePubAndPrvFiles(String ownerName) throws IOException {
+	private void writePubAndPrvFiles() throws IOException {
 		// Create public and private file
 		DataOutputStream pubFile = new DataOutputStream(new FileOutputStream(ownerName + ".pub"));
 		DataOutputStream prvFile = new DataOutputStream(new FileOutputStream(ownerName + ".prv"));
 
 		// Data for the public key file
-		pubFile.writeInt(ownerName.length());
+		pubFile.writeInt(ownerName.getBytes().length);
 		pubFile.write(ownerName.getBytes());
 		pubFile.writeInt(publicKeyBytes.length);
 		pubFile.write(publicKeyBytes);
 
 		// Data for the private key file
-		prvFile.writeInt(ownerName.length());
+		prvFile.writeInt(ownerName.getBytes().length);
 		prvFile.write(ownerName.getBytes());
 		prvFile.writeInt(privateKeyBytes.length);
 		prvFile.write(privateKeyBytes);
