@@ -17,11 +17,11 @@ import java.security.PublicKey;
  */
 public class RSAKeyCreation {
 	private String ownerName;
-	private static KeyPair keyPair = null;
-	private static PrivateKey privateKey;
-	private static PublicKey publicKey;
-	private static byte[] publicKeyBytes;
-	private static byte[] privateKeyBytes;
+	private KeyPair keyPair = null;
+	private PrivateKey privateKey;
+	private PublicKey publicKey;
+	private byte[] publicKeyBytes;
+	private byte[] privateKeyBytes;
 
 	public RSAKeyCreation(String ownerName) {
 		this.ownerName = ownerName;
@@ -33,16 +33,6 @@ public class RSAKeyCreation {
 		rsaKC.generateKeyPair();
 
 		rsaKC.writePubAndPrvFiles();
-
-		System.out.println(rsaKC.ownerName.length());
-		System.out.println(rsaKC.ownerName.getBytes());
-
-		System.out.println(publicKeyBytes.length);
-		System.out.println(publicKey.getEncoded());
-
-		System.out.println(privateKeyBytes.length);
-		System.out.println(privateKey.getEncoded());
-
 	}
 
 	public void generateKeyPair() throws NoSuchAlgorithmException {
