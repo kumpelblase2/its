@@ -19,11 +19,11 @@ public class HC1 {
     public void crypt(File inOutput) throws IOException {
         InputStream stream = new FileInputStream(this.cryptFile);
         OutputStream output = new FileOutputStream(inOutput);
-        byte[] buffer = new byte[8];
+        byte[] buffer = new byte[4];
         int read = 0;
         while((read = stream.read(buffer)) > 0) {
             //Add padding if read less than 8 bytes.
-            for(int i = read; i < 8; i++) {
+            for(int i = read; i < 4; i++) {
                 buffer[i] = 0;
             }
 
