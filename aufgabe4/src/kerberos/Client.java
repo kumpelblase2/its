@@ -10,9 +10,9 @@ public class Client extends Object {
 
 	private KDC myKDC; // Konstruktor-Parameter
 
-	private String currentUser; // Speicherung bei Login nötig
-	private Ticket tgsTicket = null; // Speicherung bei Login nötig
-	private long tgsSessionKey; // K(C,TGS) // Speicherung bei Login nötig
+	private String currentUser; // Speicherung bei Login nï¿½tig
+	private Ticket tgsTicket = null; // Speicherung bei Login nï¿½tig
+	private long tgsSessionKey; // K(C,TGS) // Speicherung bei Login nï¿½tig
 
 	// Konstruktor
 	public Client(KDC kdc) {
@@ -20,18 +20,58 @@ public class Client extends Object {
 	}
 
 	public boolean login(String userName, char[] password) {
-		/* ToDo */
+		long nounce = this.generateNonce();
+		TicketResponse response = this.myKDC.requestTGSTicket(userName, "myTGS", nounce);
+		if(response == null) {
+			System.out.println("Invalid login.");
+			return false;
+		}
+		this.currentUser = userName;
+		long myKey = this.generateSimpleKeyFromPassword(password);
+		if(!response.decrypt(myKey)) {
+			return false;
+		}
+
+		if(nounce != response.getNonce()) {
+			System.out.println("Invalid noune.");
+			return false;
+		}
+
+		this.tgsTicket = response.getResponseTicket();
+		this.tgsSessionKey = response.getSessionKey();
+
+		return true;
 	}
 
 	public boolean showFile(Server fileServer, String filePath) {
-		/* ToDo */
+		long nounce = this.generateNonce();
+		Auth auth = new Auth(this.currentUser, System.currentTimeMillis());
+		auth.encrypt(this.tgsSessionKey);
+		TicketResponse response = this.myKDC.requestServerTicket(this.tgsTicket, auth, fileServer.getName(), nounce);
+		if(response == null) {
+			System.out.println("Invalid login.");
+			return false;
+		}
+		if(!response.decrypt(this.tgsSessionKey)) {
+			return false;
+		}
+
+		if(response.getNonce() != nounce) {
+			System.out.println("Invalid nounce");
+			return false;
+		}
+
+		System.out.println("Got server ticket");
+		Auth serverAuth = new Auth(this.currentUser, System.currentTimeMillis());
+		serverAuth.encrypt(response.getSessionKey());
+		return fileServer.requestService(response.getResponseTicket(), serverAuth, "showFile", filePath);
 	}
 
 	/* *********** Hilfsmethoden **************************** */
 
 	private long generateSimpleKeyFromPassword(char[] passwd) {
-		// Liefert einen eindeutig aus dem Passwort abgeleiteten Schlüssel
-		// zurück, hier simuliert als long-Wert
+		// Liefert einen eindeutig aus dem Passwort abgeleiteten Schlï¿½ssel
+		// zurï¿½ck, hier simuliert als long-Wert
 		long pwKey = 0;
 		if (passwd != null) {
 			for (int i = 0; i < passwd.length; i++) {

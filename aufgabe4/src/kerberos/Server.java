@@ -36,14 +36,23 @@ public class Server extends Object {
 
 	public boolean requestService(Ticket srvTicket, Auth srvAuth,
 			String command, String parameter) {
-			/* ToDo */
+
+		if(command.equals("showFile")) {
+			srvTicket.decrypt(this.myKey);
+			srvAuth.decrypt(srvTicket.getSessionKey());
+			if(srvAuth.getClientName().equals(srvTicket.getClientName()) && srvTicket.getServerName().equals(this.myName) && this.timeValid(srvTicket.getStartTime(), srvTicket.getEndTime())) {
+				return this.showFile(parameter);
+			}
+		}
+
+		return false;
 	}
 
 	/* *********** Services **************************** */
 
 	private boolean showFile(String filePath) {
 		/*
-		 * Angegebene Datei auf der Konsole ausgeben. Rückgabe: Status der
+		 * Angegebene Datei auf der Konsole ausgeben. Rï¿½ckgabe: Status der
 		 * Operation
 		 */
 		String lineBuf = null;
@@ -54,7 +63,7 @@ public class Server extends Object {
 			System.out.println("Datei " + filePath + " existiert nicht!");
 		} else {
 			try {
-				// Datei öffnen und zeilenweise lesen
+				// Datei ï¿½ffnen und zeilenweise lesen
 				BufferedReader inFile = new BufferedReader(
 						new InputStreamReader(new FileInputStream(myFile)));
 				lineBuf = inFile.readLine();
@@ -76,8 +85,8 @@ public class Server extends Object {
 
 	private boolean timeValid(long lowerBound, long upperBound) {
 		/*
-		 * Wenn die aktuelle Zeit innerhalb der übergebenen Zeitgrenzen liegt,
-		 * wird true zurückgegeben
+		 * Wenn die aktuelle Zeit innerhalb der ï¿½bergebenen Zeitgrenzen liegt,
+		 * wird true zurï¿½ckgegeben
 		 */
 
 		long currentTime = (new Date()).getTime(); // Anzahl mSek. seit 1.1.1970
@@ -92,8 +101,8 @@ public class Server extends Object {
 
 	boolean timeFresh(long testTime) {
 		/*
-		 * Wenn die übergebene Zeit nicht mehr als 5 Minuten von der aktuellen
-		 * Zeit abweicht, wird true zurückgegeben
+		 * Wenn die ï¿½bergebene Zeit nicht mehr als 5 Minuten von der aktuellen
+		 * Zeit abweicht, wird true zurï¿½ckgegeben
 		 */
 		long currentTime = (new Date()).getTime(); // Anzahl mSek. seit 1.1.1970
 		if (Math.abs(currentTime - testTime) < fiveMinutesInMillis) {
